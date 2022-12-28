@@ -21,6 +21,9 @@ function ProfileScreen(props) {
   const { loading, success, error } = userUpdate;
   const myOrderList = useSelector(state => state.myOrderList);
   const { loading: loadingOrders, orders, error: errorOrders } = myOrderList;
+  const [pointanddiscount, setPointanddiscount] = useState('');
+  const [updateDiscount, setUpdateDiscount] = useState('');
+  
   const handleLogout = () => {
     dispatch(logout());
     props.history.push("/signin");
@@ -29,21 +32,32 @@ function ProfileScreen(props) {
     e.preventDefault();
     dispatch(update({ id: userInfo[0][0].id, email, name, password }))
   }
-
   useEffect(() => {
     
+    async function fetchData() {
+    const response = await fetch('http://localhost:3000/guest/getuser/'+ userInfo[0][0].id);
+        const data = await response.json();
+        setPointanddiscount(data[0][0]);
+        
+    }
+    fetchData();
+
+
+console.log(pointanddiscount.point, " point")
+
     if (userInfo) {
-      console.log(userInfo[0][0].name)
       setEmail(userInfo[0][0].email);
       setName(userInfo[0][0].name);
       setPassword(userInfo[0][0].password);
+    
     }
+    
     dispatch(listMyOrders());
     return () => {
 
     };
-  }, [userInfo])
-  
+  } , [userInfo])
+
   function addAddresses(){
     async function fetchData() {
       try {
@@ -89,14 +103,33 @@ fetchData();
     console.log(error, "error");
   }} fetchData(); }
 
+  function deleteGuest(){
+    async function fetchData() {
+      try {
+        const response = await fetch('http://localhost:3000/guest/guestdelete', {
+          method: 'DELETE',
+          body: JSON.stringify({
+            id: userInfo[0][0].id
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        const data = await response.json();
+        console.log(data, "data");
+  } catch (error) {
+    console.log(error, "error");
+  }} fetchData(); }
   
+
   return <div className="profile">
+    <div className="cart-tablex">
     <div className="profile ">
       
         <form onSubmit={submitHandler} >
           <ul className="form-container">
             <li>
-              <h2>User Profile</h2>
+              <h2 className='title'>User Profile</h2>
             </li>
             <li>
               {loading && <div>Loading...</div>}
@@ -130,6 +163,9 @@ fetchData();
             <li>
               <button type="button" onClick={handleLogout} className="button secondary full-width">Logout</button>
               
+            </li>
+            <li>
+              <button type="button" onClick={deleteGuest} className="button secondary full-width">Delete Account</button>
             </li>
 
           </ul>
@@ -201,7 +237,7 @@ fetchData();
         </form>
         </div>
     </div>
-     <div className="myAddresses">
+     <div className="myAddresses-myDiscountPoint">
       <div className="form">
         <form >
           <ul className="form-container">
@@ -212,43 +248,67 @@ fetchData();
             <Link to="/myaddresseswallets" className="button primary">Show my addresses & wallets</Link>
             </li>
           </ul>
+          <div className="pointanddiscount">
+      <div className="form">
+        <form >
+          <ul className="form-container">
+            <li>
+              <h2>My Points & Discounts</h2>
+            </li>
+            <li>
+                  <h2>Point: {pointanddiscount.point}</h2>
+                  <h2>Discount: % {pointanddiscount.discount}</h2>
+            </li>
+          </ul>
         </form>
+      </div>
+    </div>
+        </form>
+        
         </div>
-     </div>
+    </div>
+    </div>
+    <div className="cart-table">
     <div className="profile-orders content-margined">
       {
         loadingOrders ? <div>Loading...</div> :
           errorOrders ? <div>{errorOrders} </div> :
+          <div className="cart-table">
             <table className="table">
               <thead>
                 <tr>
-                  <th>order_id</th>
-                  <th>user_id</th>
-                  <th>address_id</th>
-                  <th>total_price</th>
-                  <th>order_date</th>
-                   <th>wallet_name</th>
-                   <th>status</th>
+                  <th>Sipariş Id</th>
+                  <th>Adres Adi</th>
+                  <th>Tutar</th>
+                  <th>Sipariş Tarihi</th>
+                   <th>Cüzdan İsmi</th>
+                   <th>Sipariş Durumu</th>
+                   <th>Sipariş Detaylari</th>
+                   
                 </tr>
               </thead>
               <tbody>
                 {orders.map(order => <tr key={order._id}>
-                  <td>{order.id}</td>
-                  <td>{order.user_id}</td>
-                  <td>{order.address_id}</td>
-                  <td>{order.total_price}</td>
+                  
+                  <td>{order.id[0]}</td>
+                  <td>{order.address}</td>
+                  <td>{order.total_price} TL </td>
                   <td>{order.order_date}</td>
                   <td>{order.wallet_name}</td>
                   <td>{order.status}</td>
                   <td>
-                    <Link to={"/order/" + order._id}>DETAILS</Link>
+                  {console.log(order.id[0], "orders")}
+                  <Link to={`/myorder/${order.id[0]}`}>View Order Detail</Link>
                   </td>
                 </tr>)}
               </tbody>
             </table>
+            </div>
       }
     </div>
+    </div>
   </div>
+  
 }
 
 export default ProfileScreen;

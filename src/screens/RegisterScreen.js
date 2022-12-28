@@ -8,16 +8,13 @@ function RegisterScreen(props) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rePassword, setRePassword] = useState('');
   const userRegister = useSelector(state => state.userRegister);
   const { loading, userInfo, error } = userRegister;
   const dispatch = useDispatch();
 
   const redirect = props.location.search ? props.location.search.split("=")[1] : '/';
   useEffect(() => {
-    if (userInfo) {
-      props.history.push(redirect);
-    }
+    
     return () => {
       //
     };
@@ -56,11 +53,7 @@ function RegisterScreen(props) {
           <input type="password" id="password" name="password" onChange={(e) => setPassword(e.target.value)}>
           </input>
         </li>
-        <li>
-          <label htmlFor="rePassword">Re-Enter Password</label>
-          <input type="password" id="rePassword" name="rePassword" onChange={(e) => setRePassword(e.target.value)}>
-          </input>
-        </li>
+        
         <li>
           <button type="submit" className="button primary">Register</button>
         </li>

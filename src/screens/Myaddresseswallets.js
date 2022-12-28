@@ -97,11 +97,14 @@ function Myaddresseswallets() {
         }
     return (
         <div>
-            <h1>Adresler</h1>
+            <h1 className='title'>My Addresses & Wallets</h1>
+            <div className="cart-table">
              <table>
+             <h1 className='title'>Adresler</h1>
+             <div className="cart-table">
                 <thead>
                     <tr>
-                        <th>Adres</th>
+                        <th>Adres Adi</th>
                         <th>Şehir</th>
                         <th>Sokak</th>
                         <th>Posta Kodu</th>
@@ -118,7 +121,9 @@ function Myaddresseswallets() {
                         </tr>
                     ))}
                 </tbody>
-                <h1>Cüzdanlar</h1>
+                </div>
+                <h1 className='title'>Cüzdanlar</h1>   
+                <div className="cart-table">
                 <thead>
                     <tr>
                         <th>Cüzdan Adi</th>
@@ -134,8 +139,9 @@ function Myaddresseswallets() {
                         </tr>
                     ))}
                 </tbody>
-                            
+                </div>            
              </table>
+             </div>
         </div>
     )
 }

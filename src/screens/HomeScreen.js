@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Cookie from 'js-cookie';
+import styled from 'styled-components';
 function HomeScreen() {
 
   const [subProduct, setsubProducts] = useState([]);
@@ -9,6 +10,9 @@ function HomeScreen() {
   const [rating, setRating] = useState('');
   const [comment, setComment] = useState('');
   const [quantity, setQuantity] = useState('');
+  const [filterproducts, setFilterProducts] = useState([]);
+  const [selectSize, setSelectSize] = useState('');
+  const [selectColor, setSelectColor] = useState('');
 
   useEffect(() => {
     async function fetchData() {
@@ -16,7 +20,6 @@ function HomeScreen() {
       const data = await response.json();
       setProducts(data[0]);
     }
-
     fetchData();}, []);
   function handleCategoryClick(id) {
       setSelectedCategory(id);
@@ -76,6 +79,12 @@ function HomeScreen() {
         });
         const data = await response.json();
         console.log(data);
+        if(response.ok)
+        {
+          alert("Added to Cart");
+          window.location.reload();
+        }
+
       } catch (error) {
         console.error(error);
       }
@@ -100,6 +109,11 @@ function HomeScreen() {
         });
         const data = await response.json();
         console.log(data);
+        if(response.ok)
+        {
+          alert("Added to Favorites");
+          window.location.reload();
+        }
       } catch (error) {
         console.error(error);
       }
@@ -107,123 +121,132 @@ function HomeScreen() {
       fetchaddfavoritesData();
       setReviews([]);
   }
+
+  async function filterCategoriesBarcode() {
+
+    let barcodex = document.getElementById('barcode').value;
+let namex = document.getElementById('name').value;
+
+if (document.getElementById('barcode').value === '') {
+  barcodex = null;
+  }
+  if (document.getElementById('name').value === '') {
+    namex = null;
+  }
+    const response = await fetch('http://localhost:3000/filter/categoriesandbarcode', {
+      method: 'POST',
+      body: JSON.stringify({
+        barcode: barcodex,
+        name: namex,
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    const data = await response.json();
+    setFilterProducts(data[0]);
+  }
+
+  async function filterSizeColor(){
+    const response = await fetch('http://localhost:3000/filter/SizeColor', {
+      method: 'POST',
+      body: JSON.stringify({
+        size: selectSize,
+        color: selectColor}),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    const data = await response.json();
+    setFilterProducts(data[0]);
+  }
+
 return (
-<div>
-  <h1>Ürünler</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>Ürün Adı</th>
-      </tr>
-  <tr>
-    {products.map(product => (
-    <li key={product.id}>
-      <button onClick={() => { handleCategoryClick(product.id); handleReviewClick(product.id); }}>
-        {product.name}
-      </button>
-      {/* Sadece seçilen kategorinin alt kategorilerini gösterin */}
-      {product.id === selectedProduct && (
-        <ul className="sub-product">
-          <table>
-  <thead>
-    <tr>
-      <th>Ürün Adı</th>
-      <th>Fiyat</th>
-      <th>Boyut</th>
-      <th>Renk</th>
-      <th>Stok</th>
-      <th>Görsel</th>
-    </tr>
-  </thead>
-  <tbody>
-    {subProduct.map(subProducts => (
-      <tr key={subProducts.id}>
-        <td>{subProducts.name}</td>
-        <td>{subProducts.price}</td>
-        <td>{subProducts.size}</td>
-        <td>{subProducts.color}</td>
-        <td>{subProducts.stock}</td>
-        <td>{subProducts.image}</td>
-      </tr>
-    ))}
-  </tbody>
-</table>
-    {reviews.map(review => (
-            <li key={review.id}>
-              <tr>
-              <td>Comment : {review.comment}</td>
-              <td>--------</td>
-              <td>Rating : {review.rating}</td>
-              </tr>
-            </li>
-          ))}{ <li>
-            <tr>
-              <td>
-              <form onSubmit={() => { handleAddCartClick(product.id); }}>
-                <ul className="form-container">
-                  <li>
-                    <label htmlFor="quantity">Quantity</label>
-                    <input
-                      type="text"
-                      name="quantity"
-                      id="quantity"
-                      onChange={e => setQuantity(e.target.value)}
-                      
-                    ></input>
-                  </li>
-                  <li>
-                    <button type="submit" className="button primary">
-                      Add Cart
+<div >
+  <div className="row">
+    <div className="col-3">
+      <div className="card">
+        <div className="card-header">
+          <h3 className='title'>Products</h3>
+        </div>
+        <div className="card-body">
+          <ul className="list-group">
+              {products.map((product) => (
+                <li className = "product_item"key= {product.id}>
+                <button
+                  type="button"
+                  className="list-group-item"
+                  onClick={() => { handleCategoryClick(product.id); handleReviewClick(product.id); } } >
+                  <img className="productss-image"src={product.image} alt={product.id}  />
+                </button>
+                  
+                  
+                <br />
+                {product.name}
+                <br />
+                Fiyat: {product.price} TL
+                {product.id === selectedProduct && (
+                  <div>      
+                    {reviews.map((review) => (
+                    <div>
+                      <p>Yorum: {review.comment}</p>
+                      <p>Puan: {review.rating}</p>
+                    </div>
+                  ))}
+                  <br />
+                    <label htmlFor="quantity">Adet giriniz:</label>
+                    <br />
+                    <br />
+                    <input type="number" className="form-control" id="quantity" onChange={(e) => setQuantity(e.target.value)}></input>
+                    <br />
+                    <br />
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={() => handleAddCartClick(product.id) } >
+                      Sepete Ekle
                     </button>
-                  </li>
-                </ul>
-              </form>
-              <form onSubmit={() => { handlePostReviewClick(product.id); }}>
-                  <ul className="form-container">
-                    <li>
-                      <label htmlFor="rating">Rating</label>
-                      <input
-                        type="text"
-                        name="rating"
-                        id="rating"
-                        onChange={e => setRating(e.target.value)}
-                      ></input>
-                    </li>
-                    <li>
-                      <label htmlFor="comment">Comment</label>
-                      <input
-                        type="text"
-                        name="comment"
-                        id="comment"
-                        onChange={e => setComment(e.target.value)}
-                      ></input>
-                    </li>
-                    <li>
-                      <button type="submit" className="button primary">
-                        Post Review
-                      </button>
-                    </li>
-                  </ul>
-                </form>
-                <form onSubmit={() => { handleAddFavoritesClick(product.id); }}>
-                  <ul className="form-container">
-                    <li>
-                      <button type="submit" className="button primary">
-                        Add Favorites
-                      </button>
-                    </li>
-                  </ul>
-                </form>
-              </td>
-            </tr>
-          </li>}
-        </ul>
-      )}
-    </li>
-  ))}
-  </tr>
-</thead>
-</table>
+                    <br />
+                    <br />
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={() => handleAddFavoritesClick(product.id) } >
+                      Favorilere Ekle
+                    </button>
+                    <br />
+                    <br />
+                    
+                
+                    <div className="form-group">
+                      <label htmlFor="comment">Yorum:</label>
+                      <textarea className="form-control" rows="5" id="comment" onChange={(e) => setComment(e.target.value)}></textarea>
+                    </div>
+                    <br />
+                    <label htmlFor="rating">Puan:</label>
+                    <div className="form-group">
+                     
+                      <input type="number" className="form-control" id="rating" onChange={(e) => setRating(e.target.value)}></input>
+                    </div>
+                    <br />
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={() => handlePostReviewClick(product.id) } >
+                      Yorum Yap
+                    </button>
+                    </div>
+                )}
+              </li>
+              
+              ))}
+          </ul>
+        </div>
+        
+      </div>
+      </div>
+      </div>
+
 </div>
 );
 }

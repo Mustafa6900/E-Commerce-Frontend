@@ -15,6 +15,8 @@ const update = ({ id, email, password }) => async dispatch => {
   } catch (error) {
   dispatch({ type: USER_UPDATE_FAIL, payload: error.message });
   }
+  Cookie.remove("userInfo");
+window.location.replace("http://localhost:3001/");
   };
 
 const signin = (email, password) => async (dispatch) => {
@@ -36,10 +38,14 @@ const signin = (email, password) => async (dispatch) => {
 const register = (name, email, password) => async (dispatch) => {
   dispatch({ type: USER_REGISTER_REQUEST, payload: { name, email, password } });
   try {
-    const { data } = await Axios.post("http://localhost:3000/guest/addguest", { name, email, password });
+    const { data } = await Axios.post("http://localhost:3000/guest/addguest", { name, email, password, point: 0, discount: 0 });
     dispatch({ type: USER_REGISTER_SUCCESS, payload: data });
     Cookie.set('userInfo', JSON.stringify(data));
-  } catch (error) {
+    alert("Register Success")
+    alert("Please Sign In")
+  } 
+
+  catch (error) {
     dispatch({ type: USER_REGISTER_FAIL, payload: error.message });
   }
 }

@@ -56,29 +56,55 @@ function deleteFavoritesItem(id){
 
   }
 
+  function handleAddCartClick(id){
+    console.log(id, "  id");
+    async function fetchaddcartData() {
+      const userInfo = JSON.parse(Cookie.get('userInfo'));
+      try {
+        const response = await fetch('http://localhost:3000/cart/addCart', {
+          method: 'POST',
+          body: JSON.stringify({
+            product_id: id,
+            user_id: userInfo[0][0].id,
+            quantity: 1,
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        const data = await response.json();
+        console.log(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+      fetchaddcartData();
+  }
+
 return (
 <div>
-<h1>Favoriler</h1>
+<h1 className='title'>Favoriler</h1>
 <table>
 <thead>
 <tr>
-<th>User_id</th>
-<th>Product_id</th>
+
+<th>Favori Ürünler</th>
 </tr>
 </thead>
+<div  className="cart-table">
 <tbody>
 {favorites.map(item => (
 <tr key={item.user_id}>
-<td>{item.user_id}</td>
-<td>{item.product_id}</td>
-{
-    <li>
-        <button onClick={() => deleteFavoritesItem(item.product_id)}>Sil</button>
-    </li>
-}
+
+<td><img className="cart-product-image"src={item.image} alt={item.product_id} /></td>
+<td><button onClick={() => deleteFavoritesItem(item.product_id)}>Sil</button></td>
+<td><button onClick={() => handleAddCartClick(item.product_id)}>Sepete Ekle</button></td>
+    
+
 </tr>
 ))}
 </tbody>
+</div>
 </table>
 </div>
 );

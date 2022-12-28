@@ -283,6 +283,27 @@ a > .rating > span:last-child {
 }
 
 /* forms */
+.form-select{
+  margin-left: 10px;
+  padding: 1rem;
+  border: 0.1rem #c0c0c0 solid;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+.form-select option{
+  padding: 1rem;
+  border: 0.1rem #c0c0c0 solid;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+.form-input{
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 1rem;
+  border: 0.1rem #c0c0c0 solid;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
 
 .form {
   display: flex;
@@ -326,12 +347,34 @@ input {
 
 .table {
   width: 100%;
+
 }
 th {
-  text-align: left;
+  text-align: center;
+  padding: 2rem;
+}
+td{
+  text-align: center;
 }
 tbody > tr:nth-child(odd) {
   background-color: #f0f0f0;
+}
+
+.cart-table{
+  margin: 2rem;
+  border: 0.1rem #c0c0c0 solid;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: fit-content;
+  height: fit-content;
+}
+.cart-tablex{
+  margin: 2rem;
+  border: 0.1rem #c0c0c0 solid;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: fit-content;
+  flex-direction: row;
 }
 
 /* Checkout Steps */
@@ -463,4 +506,89 @@ tbody > tr:nth-child(odd) {
 
 .categories a:hover {
   background-color: #c0c0c0;
+}
+
+.card-body{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+
+}
+
+.list-group{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  
+  
+}
+
+.list-group-item{
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: #fcfcfc;
+  max-width: 20rem;
+}
+
+.product_item{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1 1 20rem;
+  margin: 1rem;
+  padding: 1rem;
+  border: 0.1rem #c0c0c0 solid;
+  border-radius: 0.5rem;
+  background-color: #fcfcfc;
+  height: fit-content;
+  width: max-content;
+ 
+
+}
+.productss-image
+{
+  cursor: pointer;
+  max-width: -webkit-fill-available;
+}
+
+.title{
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  margin-left: 2rem;
+}
+.titlex{
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  margin-left: 2rem;
+  color: red
+}
+
+.cart-product-image{
+  max-width: 10rem;
+  margin-right: 1rem;
+}
+
+.cart-button{
+  margin-top: 1rem;
+  list-style: none;
+  margin: 1rem;
+}
+
+.cart-buttonx{
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  list-style: none;
+}
+
+.cart-adresswalletbutton{
+  
+  margin: 1rem;
 }
